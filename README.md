@@ -7,10 +7,10 @@
 ## Features
 
 - Convert **MT103 → pacs.008.001.12**  
-- Convert **MT202 → pacs.009.001.12**  
+- Convert **MT202 → pacs.009.001.11**  
 - Automatic detection of MT type  
 - XML serialization using JAXB  
-- Validation against ISO 20022 XSD  
+- Validation against ISO 20022 XSD (Payments Clearing and Settlement V13) 
 - Handles mandatory and optional fields correctly  
 - REST API endpoint for easy integration  
 
@@ -20,8 +20,8 @@
 
 | SWIFT MT | ISO 20022 MX | Description |
 |-----------|---------------|-------------|
-| MT103     | pacs.008.001.12 | Customer Credit Transfer |
-| MT202     | pacs.009.001.12 | Financial Institution Transfer |
+| MT103     | pacs.008.001.12 | Customer Credit Transfer | Payments Clearing and Settlement V13
+| MT202     | pacs.009.001.11 | Financial Institution Transfer |
 
 ---
 
@@ -40,7 +40,7 @@
         │
         ├─ Step 2: Detect MT type
         │       ├─ MT103 → pacs.008.001.12
-        │       └─ MT202 → pacs.009.001.12
+        │       └─ MT202 → pacs.009.001.11
         │
         ├─ Step 3: Map MT → MX → PacsDocument object
         │
@@ -137,7 +137,7 @@ The REST API will be available at `http://localhost:8080/convert`.
 
 ## Technologies
 
-- Java 17  
+- Java 21  
 - Spring Boot 3.x  
 - JAXB for XML binding  
 - ISO 20022 XSD validation  
