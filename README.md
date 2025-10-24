@@ -19,9 +19,9 @@
 ## Supported Standards
 
 | SWIFT MT | ISO 20022 MX | Description |
-|-----------|---------------|-------------|
-| MT103     | pacs.008.001.12 | Customer Credit Transfer | Payments Clearing and Settlement V13
-| MT202     | pacs.009.001.11 | Financial Institution Transfer |
+|----------|---------------|-------------|
+| MT103    | pacs.008.001.12 | Customer Credit Transfer | Payments Clearing and Settlement V13 |
+| MT202    | pacs.009.001.11 | Financial Institution Transfer |  ...  |
 
 ---
 
@@ -79,17 +79,33 @@
 
 **Request Body Example:**
 
-```json
-{
-  "mtMessage": "{1:F01BANKBEBBAXXX0000000000}{2:I103BANKDEFFXXXXN}{4:\n:20:TRX12345\n:32A:251024EUR1000,\n:50:DEBTOR\n:59:CREDITOR\n-}"
-}
-```
-
 **Response:**
 
 - **200 OK** → Returns validated MX XML  
 - **400 Bad Request** → Parsing or validation error  
 - **500 Internal Server Error** → Unexpected errors  
+
+
+**Example Request XML:**
+You can use this **minimal MT103 message** to test your Mixar API quickly:
+
+```
+:20:TRX98765
+:32A:251025EUR2500,00
+:50:Alice Sender
+:59:Bob Receiver
+```
+
+**Test with curl:**
+
+```bash
+curl -X POST http://localhost:8080/api/mt-mx/convert \
+     -H "Content-Type: text/plain" \
+     -d ":20:TRX98765
+:32A:251025EUR2500,00
+:50:Alice Sender
+:59:Bob Receiver"
+```
 
 **Example Response XML:**
 
@@ -107,6 +123,8 @@
     </FIToFICstmrCdtTrf>
 </PacsDocument>
 ```
+
+✅ The app will automatically detect it as **MT103**, map it to **pacs.008.001.12**, serialize the XML, and validate it against the ISO 20022 schema.
 
 ---
 
