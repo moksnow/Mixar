@@ -62,12 +62,12 @@ public class Mt202ToPacs009Mapper {
         tx.setIntrBkSttlmDt(gh.getIntrBkSttlmDt());
 
         // instg/instd (pacs009 typed builders)
-        tx.setInstgAgt(SwiftFieldUtils.buildAgent009(mt202.getField52A(), "UNKNOWN-INSTG"));
-        tx.setInstdAgt(SwiftFieldUtils.buildAgent009(mt202.getField58A(), "UNKNOWN-INSTD"));
+        tx.setInstgAgt(SwiftFieldUtils.buildAgent009(mt202.getField52A()));
+        tx.setInstdAgt(SwiftFieldUtils.buildAgent009(mt202.getField58A()));
 
         // optional intermed
         if (mt202.getField56A() != null) {
-            tx.setIntrmyAgt1(SwiftFieldUtils.buildAgent009(mt202.getField56A(), "UNKNOWN-INTRMY1"));
+            tx.setIntrmyAgt1(SwiftFieldUtils.buildAgent009(mt202.getField56A()));
         } else {
             tx.setIntrmyAgt1(null);
         }
@@ -82,7 +82,7 @@ public class Mt202ToPacs009Mapper {
         if (sendingBic == null) sendingBic = "CITIUS33XXX";
 
         com.mok.finmsg.mixar.model.mx.pacs009.BranchAndFinancialInstitutionIdentification sendingFin =
-                SwiftFieldUtils.buildAgent009(sendingBic, "UNKNOWN-DBTR");
+                SwiftFieldUtils.buildAgent009(sendingBic);
         tx.setUltmtDbtr(sendingFin);
         tx.setDbtr(sendingFin);
 
@@ -90,7 +90,7 @@ public class Mt202ToPacs009Mapper {
         tx.setDbtrAcct(buildOtherAccount("UNKNOWN-DBTR-ACCT"));
 
         // DbtrAgt (after Dbtr/DbtrAcct)
-        tx.setDbtrAgt(SwiftFieldUtils.buildAgent009(sendingBic, "UNKNOWN-DBTR"));
+        tx.setDbtrAgt(SwiftFieldUtils.buildAgent009(sendingBic));
         tx.setDbtrAgtAcct(null);
 
         // Creditor (agent + party as FIN INST)
@@ -99,7 +99,7 @@ public class Mt202ToPacs009Mapper {
         if (creditorBic == null) creditorBic = "BNPAFRPPXXX";
 
         com.mok.finmsg.mixar.model.mx.pacs009.BranchAndFinancialInstitutionIdentification cdtrAgt =
-                SwiftFieldUtils.buildAgent009(creditorBic, "UNKNOWN-CDTR");
+                SwiftFieldUtils.buildAgent009(creditorBic);
         tx.setCdtrAgt(cdtrAgt);
 
         // set either CdtrAgtAcct or Cdtr (we set Cdtr as FIN INST to satisfy schema)
