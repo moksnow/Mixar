@@ -3,23 +3,22 @@ package com.mok.finmsg.mixar.model.mx.pacs009;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 /**
- * @author m.khandan
- * 10/23/2025
+ * @author M_Khandan
+ * Date: 10/25/2025
+ * Time: 4:59 PM
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@XmlRootElement(name = "Document")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class PacsDocument {
-    @XmlElement(name = "FICdtTrf", required = true)
-    private FICdtTrf fiCdtTrf;
+public class PartyIdentificationId {
+
+    @XmlElement(name = "OrgId")
+    private OrganisationIdentification orgId;
 }

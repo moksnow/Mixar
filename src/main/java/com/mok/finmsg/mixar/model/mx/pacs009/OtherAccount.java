@@ -3,7 +3,6 @@ package com.mok.finmsg.mixar.model.mx.pacs009;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,15 +10,19 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author m.khandan
- * 10/23/2025
+ * 10/24/2025
  */
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@XmlRootElement(name = "Document")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class PacsDocument {
-    @XmlElement(name = "FICdtTrf", required = true)
-    private FICdtTrf fiCdtTrf;
+public class OtherAccount {
+    @XmlElement(name = "Id", required = true)
+    private String id;
+
+    // optional scheme name
+    @XmlElement(name = "SchmeNm")
+    private String schemeName;
 }

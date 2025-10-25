@@ -53,7 +53,7 @@ public class MtParserService {
     }
 
     private boolean isMt202(Map<String, String> tags) {
-        // MT202 typically has :21: (related reference), :32A: (value date + amount), :58A: (receiving institution)
+        // MT202 typically has :21:, :32A:, and :58A:, may include :52A:, :53A:, :56A:, :57A:
         return tags.containsKey("21") && tags.containsKey("32A") && tags.containsKey("58A");
     }
 
@@ -80,7 +80,12 @@ public class MtParserService {
         mt202.setField20(tagMap.get("20"));
         mt202.setField21(tagMap.get("21"));
         mt202.setField32A(tagMap.get("32A"));
+        mt202.setField52A(tagMap.get("52A"));
+        mt202.setField53A(tagMap.get("53A"));
+        mt202.setField56A(tagMap.get("56A"));
+        mt202.setField57A(tagMap.get("57A"));
         mt202.setField58A(tagMap.get("58A"));
+        mt202.setField72(tagMap.get("72"));
 
         return mt202;
     }

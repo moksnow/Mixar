@@ -96,7 +96,7 @@ You can use this **minimal MT103 message** to test your Mixar API quickly:
 :59:Bob Receiver
 ```
 
-**Test with curl:**
+**Test MT103 with curl:**
 
 ```bash
 curl -X POST http://localhost:8080/api/mt-mx/convert \
@@ -105,6 +105,54 @@ curl -X POST http://localhost:8080/api/mt-mx/convert \
 :32A:251025EUR2500,00
 :50:Alice Sender
 :59:Bob Receiver"
+```
+
+
+You can use this **minimal MT202 message** to test your Mixar API quickly:
+```
+:20:TRX20251025XYZ
+:23B:CRED
+:32A:251025USD15000,00
+:50K:/US12345678901234567890
+MICHAEL JOHNSON
+789 OAK STREET
+NEW YORK, NY
+:52A:CITIUS33XXX
+:53A:BOFAUS3NXXX
+:56A:CHASUS33XXX
+:57A:DEUTDEFFXXX
+:59:/DE44500105175407324931
+ANNA SCHMIDT
+KURFÜRSTENDAMM 100
+BERLIN
+:70:INVOICE 2025/10 - EQUIPMENT PAYMENT
+:71A:OUR
+:72:/INS/INTERMEDIARY BANK DETAILS PROVIDED
+```
+
+**Test MT202 with curl:**
+
+```bash
+curl -X POST http://localhost:8080/api/mt-mx/convert \
+     -H "Content-Type: text/plain" \
+     -d ":20:TRX20251025XYZ
+:23B:CRED
+:32A:251025USD15000,00
+:50K:/US12345678901234567890
+MICHAEL JOHNSON
+789 OAK STREET
+NEW YORK, NY
+:52A:CITIUS33XXX
+:53A:BOFAUS3NXXX
+:56A:CHASUS33XXX
+:57A:DEUTDEFFXXX
+:59:/DE44500105175407324931
+ANNA SCHMIDT
+KURFÜRSTENDAMM 100
+BERLIN
+:70:INVOICE 2025/10 - EQUIPMENT PAYMENT
+:71A:OUR
+:72:/INS/INTERMEDIARY BANK DETAILS PROVIDED"
 ```
 
 **Example Response XML:**

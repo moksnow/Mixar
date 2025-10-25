@@ -10,20 +10,19 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author m.khandan
- * 10/23/2025
+ * 10/24/2025
  */
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
-public class PaymentInstruction {
-    @XmlElement(name = "InstdAmt")
-    private String instdAmt; // amount with currency, e.g. "1000.00"
+public class PaymentIdentification {
 
-    @XmlElement(name = "Dbtr")
-    private Party dbtr;
+    @XmlElement(name = "InstrId")
+    private String instrId; // optional, can be null
 
-    @XmlElement(name = "Cdtr")
-    private Party cdtr;
+    @XmlElement(name = "EndToEndId", required = true)
+    private String endToEndId; // usually maps from MT103 :20: field
 }

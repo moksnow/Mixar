@@ -22,14 +22,8 @@ import lombok.NoArgsConstructor;
 public class Party {
 
     @XmlElement(name = "Nm")
-    private String name;
+    private String name; // optional for a customer
 
-    @XmlElement(name = "Acct")
-    private String account;
-
-    @XmlElement(name = "Adr")
-    private String address;
-
-    @XmlElement(name = "BIC")
-    private String bic;
+    @XmlElement(name = "Id")
+    private PartyIdentificationId id; // optional for FI identification
 }
