@@ -17,7 +17,7 @@ import java.util.List;
  * Time: 4:10 PM
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "grpHdr", "cdtTrfTxInf" })
+@XmlType(propOrder = {"grpHdr", "cdtTrfTxInf"})
 @Data
 @Builder
 @NoArgsConstructor

@@ -11,7 +11,7 @@ import java.util.Collections;
 
 /**
  * Maps SWIFT MT103 to ISO20022 pacs.008 (clean, modular, and testable).
- *
+ * <p>
  * Author: m.khandan
  * Date: 10/25/2025
  */

@@ -2,20 +2,22 @@ package com.mok.finmsg.mixar.service.util;
 
 import com.mok.finmsg.mixar.model.mx.pacs008.BranchAndFinancialInstitutionIdentification;
 import com.mok.finmsg.mixar.model.mx.pacs008.FinancialInstitutionIdentification;
-import com.mok.finmsg.mixar.model.mx.pacs009.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 /**
  * @author m.khandan
  * 10/25/2025
  */
 public final class SwiftFieldUtils {
 
-    private SwiftFieldUtils() {}
-
     private static final Pattern BIC_PATTERN = Pattern.compile("\\b([A-Z0-9]{8,11})\\b");
+
+    private SwiftFieldUtils() {
+    }
 
     // --- parsing helpers ---
 
@@ -60,7 +62,7 @@ public final class SwiftFieldUtils {
     // --- pacs.008 builder (typed) ---
     public static BranchAndFinancialInstitutionIdentification buildAgent008(String bic, String name, String fallback) {
         FinancialInstitutionIdentification fin = new FinancialInstitutionIdentification(
-                bic != null ? bic : null,
+                bic,
                 (bic == null && name != null) ? name : fallback
         );
         return new BranchAndFinancialInstitutionIdentification(fin);
@@ -68,7 +70,7 @@ public final class SwiftFieldUtils {
 
     // --- pacs.009 builder (typed) ---
     public static com.mok.finmsg.mixar.model.mx.pacs009.BranchAndFinancialInstitutionIdentification buildAgent009(
-            String bicOrRaw, String fallback) {
+            String bicOrRaw) {
 
         String bic = extractBic(bicOrRaw);
         com.mok.finmsg.mixar.model.mx.pacs009.FinancialInstitutionIdentification fin =

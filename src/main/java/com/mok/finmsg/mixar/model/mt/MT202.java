@@ -39,38 +39,4 @@ public class MT202 extends MtMessage {
     /** :72: Sender to Receiver Information (optional) */
     private String field72;
 
-    // === Utility helpers (optional, useful for mapping) ===
-
-    /**
-     * Extract value date (YYYY-MM-DD) from :32A:
-     */
-    public String getValueDate() {
-        if (field32A != null && field32A.length() >= 6) {
-            String d = field32A.substring(0, 6);
-            return "20" + d.substring(0, 2) + "-" + d.substring(2, 4) + "-" + d.substring(4, 6);
-        }
-        return null;
-    }
-
-    /**
-     * Extract currency code from :32A:
-     */
-    public String getCurrency() {
-        if (field32A != null && field32A.length() >= 9) {
-            return field32A.substring(6, 9);
-        }
-        return null;
-    }
-
-    /**
-     * Extract numeric amount from :32A:
-     */
-    public java.math.BigDecimal getAmount() {
-        if (field32A != null && field32A.length() > 9) {
-            try {
-                return new java.math.BigDecimal(field32A.substring(9).replace(",", "."));
-            } catch (NumberFormatException ignored) {}
-        }
-        return null;
-    }
 }
