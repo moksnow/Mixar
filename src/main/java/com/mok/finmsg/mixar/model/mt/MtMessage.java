@@ -17,5 +17,4 @@ import java.util.Map;
 public class MtMessage {
     private String messageType; // e.g., 103, 202
     private Map<String, String> tags = new HashMap<>(); // tag → value
-
 }

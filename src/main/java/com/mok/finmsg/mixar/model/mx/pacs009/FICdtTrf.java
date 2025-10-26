@@ -23,7 +23,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FICdtTrf {
-
     @XmlElement(name = "GrpHdr", required = true)
     private GroupHeader grpHdr;
 

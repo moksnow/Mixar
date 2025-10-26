@@ -13,11 +13,12 @@ import java.io.IOException;
 import java.io.StringReader;
 
 /*
-  @author m.khandan
- * 10/23/2025
+
  */
 
 /**
+ * @author m.khandan
+ * 10/23/2025
  * Validates ISO 20022 MX XML messages against XSD schema.
  */
 @Service

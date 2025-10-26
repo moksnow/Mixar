@@ -20,7 +20,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Party {
-
     @XmlElement(name = "Nm")
     private String name;
 

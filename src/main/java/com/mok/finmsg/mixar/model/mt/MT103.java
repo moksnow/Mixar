@@ -21,7 +21,6 @@ public class MT103 extends MtMessage {
     // optional ordering institution / sender correspondent fields
     private String field52A;    // :52A: (BIC) // Ordering Institution (BIC)
     private String field52D;    // :52D: (name/address variant)
-
     // optional account with / beneficiary agent fields
     private String field57A;    // :57A: (BIC) // Account With Institution (BIC)
     private String field57D;    // :57D: (name/address variant)

@@ -7,12 +7,9 @@ import org.springframework.stereotype.Service;
 
 import java.io.StringWriter;
 
-/*
-  @author m.khandan
- * 10/23/2025
- */
-
 /**
+ * @author m.khandan
+ * 10/23/2025
  * Serializes MX (ISO 20022) objects into XML strings.
  */
 @Service

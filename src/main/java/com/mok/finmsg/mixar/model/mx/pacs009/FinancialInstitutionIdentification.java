@@ -19,7 +19,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
 public class FinancialInstitutionIdentification {
-
     @XmlElement(name = "BICFI")
     private String bicfi;
 

@@ -19,8 +19,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OtherIdentification {
-
     @XmlElement(name = "Id", required = true)
     private String id;
-
 }

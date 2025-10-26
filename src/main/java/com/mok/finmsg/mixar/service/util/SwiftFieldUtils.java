@@ -2,6 +2,7 @@ package com.mok.finmsg.mixar.service.util;
 
 import com.mok.finmsg.mixar.model.mx.pacs008.BranchAndFinancialInstitutionIdentification;
 import com.mok.finmsg.mixar.model.mx.pacs008.FinancialInstitutionIdentification;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -12,14 +13,11 @@ import java.util.regex.Pattern;
  * @author m.khandan
  * 10/25/2025
  */
+
+@NoArgsConstructor
 public final class SwiftFieldUtils {
 
     private static final Pattern BIC_PATTERN = Pattern.compile("\\b([A-Z0-9]{8,11})\\b");
-
-    private SwiftFieldUtils() {
-    }
-
-    // --- parsing helpers ---
 
     public static BigDecimal extractAmount(String field32A) {
         if (field32A == null || field32A.length() < 9) return BigDecimal.ZERO;

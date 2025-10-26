@@ -35,18 +35,17 @@ import lombok.NoArgsConstructor;
         "intrmyAgt3Acct",
         "ultmtDbtr",
         "dbtr",
-        "dbtrAcct",       // <-- added (must appear BEFORE DbtrAgt)
+        "dbtrAcct",
         "dbtrAgt",
         "dbtrAgtAcct",
         "cdtrAgt",
         "cdtrAgtAcct",
-        "cdtr",           // <-- added (customer/party for creditor) appears after cdtrAgent/Acct
+        "cdtr",
         "purp",
         "rgltryRptg",
         "splmtryData"
 })
 public class CreditTransferTransactionFI {
-
     @XmlElement(name = "PmtId", required = true)
     private PaymentIdentification pmtId;
 
@@ -92,11 +91,9 @@ public class CreditTransferTransactionFI {
     @XmlElement(name = "Dbtr")
     private BranchAndFinancialInstitutionIdentification dbtr;
 
-    // NEW: Debtor account (appears after Dbtr in XSD sequence)
     @XmlElement(name = "DbtrAcct")
     private Account dbtrAcct;
 
-    // Debtor agent & account
     @XmlElement(name = "DbtrAgt", required = true)
     private BranchAndFinancialInstitutionIdentification dbtrAgt;
 

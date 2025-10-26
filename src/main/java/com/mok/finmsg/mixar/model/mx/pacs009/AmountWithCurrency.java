@@ -24,5 +24,4 @@ public class AmountWithCurrency {
 
     @XmlAttribute(name = "Ccy", required = true)
     private String currency;
-
 }

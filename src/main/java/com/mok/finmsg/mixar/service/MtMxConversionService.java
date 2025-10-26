@@ -32,17 +32,13 @@ public class MtMxConversionService {
         String xml;
         if (mx instanceof com.mok.finmsg.mixar.model.mx.pacs008.PacsDocument pacs008) {
             xml = serializerService.serialize(pacs008);
-            System.out.println(xml); // check the exact order under <GrpHdr>
-
             validatorService.validate(xml, "103");
         } else if (mx instanceof com.mok.finmsg.mixar.model.mx.pacs009.PacsDocument pacs009) {
             xml = serializerService.serialize(pacs009);
-            System.out.println(xml); // check the exact order under <GrpHdr>
             validatorService.validate(xml, "202");
         } else {
             throw new IllegalArgumentException("Unsupported MX type: " + mx.getClass().getSimpleName());
         }
-
         System.out.println("MT type: " + mt.getMessageType());
         System.out.println("Generated XML: " + xml);
         return xml;

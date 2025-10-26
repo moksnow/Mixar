@@ -3,6 +3,7 @@ package com.mok.finmsg.mixar.controller;
 import com.mok.finmsg.mixar.service.MtMxConversionService;
 import jakarta.xml.bind.JAXBException;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +18,7 @@ import java.io.IOException;
  * @author m.khandan
  * 10/23/2025
  */
+@Slf4j
 @RestController
 @RequestMapping("/api/mt-mx")
 @AllArgsConstructor
@@ -26,8 +28,6 @@ public class MtMxController {
 
 
     /**
-     * Converts a raw MT message to MX XML and validates it.
-     *
      * @param mtMessage Raw MT message string in request body
      * @return MX XML string or error message
      */
@@ -45,7 +45,7 @@ public class MtMxController {
         } catch (SAXException | IOException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Validation error: " + e.getMessage());
         } catch (Exception e) {
-            System.out.println(e);
+            log.error("e: ", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error: " + e.getMessage());
         }
     }

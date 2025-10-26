@@ -19,7 +19,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PaymentIdentification {
-
     @XmlElement(name = "InstrId")
     private String instrId; // optional, can be null
 

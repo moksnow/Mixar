@@ -11,11 +11,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /*
-  @author m.khandan
- * 10/23/2025
+
  */
 
 /**
+ * @author m.khandan
+ * 10/23/2025
  * Parses raw SWIFT MT message strings into MT message objects.
  * Currently supports MT103 and MT202.
  */

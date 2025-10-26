@@ -18,7 +18,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
 public class BranchAndFinancialInstitutionIdentification {
-
     @XmlElement(name = "FinInstnId")
     private FinancialInstitutionIdentification finInstnId;
 }

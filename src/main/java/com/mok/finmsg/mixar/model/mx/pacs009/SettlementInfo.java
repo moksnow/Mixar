@@ -18,8 +18,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
 public class SettlementInfo {
-
     @XmlElement(name = "SttlmMtd")
     private String sttlmMtd = "CLRG"; // or INDA/INGA/CLRG depending on use
-
 }

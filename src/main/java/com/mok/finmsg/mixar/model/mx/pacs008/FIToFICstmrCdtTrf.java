@@ -21,11 +21,9 @@ import java.util.List;
 @AllArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
 public class FIToFICstmrCdtTrf {
-
     @XmlElement(name = "GrpHdr")
     private GroupHeader grpHdr;
 
     @XmlElement(name = "CdtTrfTxInf")
     private List<CreditTransferTransaction> cdtTrfTxInf;
-
 }
