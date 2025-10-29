@@ -2,6 +2,7 @@ package com.mok.finmsg.mixar.service.parser;
 
 import com.mok.finmsg.mixar.model.mt.MT103;
 import com.mok.finmsg.mixar.model.mt.MT202;
+import com.mok.finmsg.mixar.model.mt.MT202Cov;
 import com.mok.finmsg.mixar.model.mt.MtMessage;
 import org.springframework.stereotype.Service;
 
@@ -36,9 +37,11 @@ public class MtParserService {
             throw new IllegalArgumentException("No valid SWIFT tags found in message");
         }
 
-        // Detect message type based on distinctive field patterns
-        if (isMt103(tagMap)) {
+        // ✅ Detect MT202 COV first (before normal 202)
+        if (isMt103(tagMap, rawMessage)) {
             return parseMt103(tagMap);
+        } else if (isMt202Cov(rawMessage, tagMap)) {
+            return parseMt202Cov(tagMap);
         } else if (isMt202(tagMap)) {
             return parseMt202(tagMap);
         } else {
@@ -46,9 +49,12 @@ public class MtParserService {
         }
     }
 
-    private boolean isMt103(Map<String, String> tags) {
-        // MT103 messages always have :32A: (value date + amount) and :50: (ordering customer)
-        return tags.containsKey("32A") &&
+    private boolean isMt103(Map<String, String> tags, String raw) {
+        boolean hasCovBlock = raw.contains("{119:COV}");
+        boolean hasMt202Fields = tags.containsKey("21") && tags.containsKey("58A");
+
+        return !hasCovBlock && !hasMt202Fields &&
+                tags.containsKey("32A") &&
                 (tags.containsKey("50") || tags.containsKey("50A") || tags.containsKey("50K") || tags.containsKey("50F")) &&
                 (tags.containsKey("59") || tags.containsKey("59A") || tags.containsKey("59F"));
     }
@@ -57,6 +63,19 @@ public class MtParserService {
         // MT202 typically has :21:, :32A:, and :58A:, may include :52A:, :53A:, :56A:, :57A:
         return tags.containsKey("21") && tags.containsKey("32A") && tags.containsKey("58A");
     }
+
+    private boolean isMt202Cov(String raw, Map<String, String> tags) {
+        // Must have cover-related fields
+        boolean hasCoverFields = tags.containsKey("21") && tags.containsKey("32A") &&
+                (tags.containsKey("50A") || tags.containsKey("50K")) &&
+                tags.containsKey("59");
+
+        boolean hasAgentFields = tags.containsKey("52A") || tags.containsKey("56A") ||
+                tags.containsKey("57A") || tags.containsKey("58A");
+
+        return raw.contains("{119:COV}") || (hasCoverFields && hasAgentFields);
+    }
+
 
     private MT103 parseMt103(Map<String, String> tagMap) {
         MT103 mt103 = new MT103();
@@ -90,6 +109,35 @@ public class MtParserService {
 
         return mt202;
     }
+
+    private MT202Cov parseMt202Cov(Map<String, String> tagMap) {
+        MT202Cov cov = new MT202Cov();
+        cov.setMessageType("202COV");
+
+        cov.setField20(tagMap.get("20"));
+        cov.setField21(tagMap.get("21"));
+        cov.setField32A(tagMap.get("32A"));
+        cov.setField52A(tagMap.get("52A"));
+        cov.setField53A(tagMap.get("53A"));
+        cov.setField56A(tagMap.get("56A"));
+        cov.setField57A(tagMap.get("57A"));
+        cov.setField58A(tagMap.get("58A"));
+        cov.setField72(tagMap.get("72"));
+
+        // COV-specific fields (customer-level info)
+        cov.setField50A(tagMap.get("50A"));
+        cov.setField50K(tagMap.get("50K"));
+        cov.setField59(tagMap.get("59"));
+        cov.setField70(tagMap.get("70"));
+        cov.setField72Cov(tagMap.get("72")); // optional override
+
+        // Optional extra fields if present
+        cov.setField52AOverride(tagMap.get("52A"));
+        cov.setField21Cov(tagMap.get("21"));
+
+        return cov;
+    }
+
 
     private Map<String, String> extractAllTags(String raw) {
         Map<String, String> tagMap = new HashMap<>();

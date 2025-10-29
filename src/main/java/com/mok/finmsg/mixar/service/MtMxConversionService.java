@@ -1,5 +1,6 @@
 package com.mok.finmsg.mixar.service;
 
+import com.mok.finmsg.mixar.model.mt.MT202Cov;
 import com.mok.finmsg.mixar.model.mt.MtMessage;
 import com.mok.finmsg.mixar.service.mapper.MtMapperService;
 import com.mok.finmsg.mixar.service.parser.MtParserService;
@@ -35,12 +36,14 @@ public class MtMxConversionService {
             validatorService.validate(xml, "103");
         } else if (mx instanceof com.mok.finmsg.mixar.model.mx.pacs009.PacsDocument pacs009) {
             xml = serializerService.serialize(pacs009);
-            validatorService.validate(xml, "202");
-        } else {
+            // Treat MT202COV as MT202 for validation
+            String validationType = mt.getMessageType().equalsIgnoreCase("202COV") ? "202" : mt.getMessageType();
+            validatorService.validate(xml, validationType);
+        }  else {
             throw new IllegalArgumentException("Unsupported MX type: " + mx.getClass().getSimpleName());
         }
-        System.out.println("MT type: " + mt.getMessageType());
         System.out.println("Generated XML: " + xml);
+        System.out.println("MT type: " + mt.getMessageType());
         return xml;
     }
 }

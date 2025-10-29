@@ -2,6 +2,7 @@ package com.mok.finmsg.mixar.service.mapper;
 
 import com.mok.finmsg.mixar.model.mt.MT103;
 import com.mok.finmsg.mixar.model.mt.MT202;
+import com.mok.finmsg.mixar.model.mt.MT202Cov;
 import com.mok.finmsg.mixar.model.mt.MtMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,9 @@ public class MtMapperService {
      * Maps an MT message to the corresponding MX document (pacs.008 or pacs.009)
      */
     public Object map(MtMessage message) {
-        if (message instanceof MT103 mt103) {
+        if (message instanceof MT202Cov mt202cov) {
+            return mt202Mapper.convertCov(mt202cov);
+        } else if (message instanceof MT103 mt103) {
             return mt103Mapper.convert(mt103); // returns pacs008.PacsDocument
         } else if (message instanceof MT202 mt202) {
             return mt202Mapper.convert(mt202); // returns pacs009.PacsDocument

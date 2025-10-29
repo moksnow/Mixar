@@ -1,6 +1,7 @@
 package com.mok.finmsg.mixar.model.mt;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 /**
  * @author m.khandan
@@ -8,9 +9,9 @@ import lombok.*;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder
 public class MT103 extends MtMessage {
     private String field20; // transaction reference
     private String field32A; // value date, currency, amount (YYMMDDCURAMT)

@@ -1,6 +1,7 @@
 package com.mok.finmsg.mixar.service.mapper;
 
 import com.mok.finmsg.mixar.model.mt.MT202;
+import com.mok.finmsg.mixar.model.mt.MT202Cov;
 import com.mok.finmsg.mixar.model.mx.pacs009.*;
 import com.mok.finmsg.mixar.service.util.SwiftFieldUtils;
 import org.springframework.stereotype.Component;
@@ -8,6 +9,9 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collections;
+
+import static com.mok.finmsg.mixar.service.util.SwiftFieldUtils.buildCdtrFrom59;
+import static com.mok.finmsg.mixar.service.util.SwiftFieldUtils.buildDbtrFrom50;
 
 /**
  * Maps SWIFT MT202 -> ISO20022 pacs.009 (clean, uses SwiftFieldUtils)
@@ -30,6 +34,95 @@ public class Mt202ToPacs009Mapper {
         doc.setFiCdtTrf(body);
         return doc;
     }
+
+    /**
+     * Converts MT202 COV (cover payment) to pacs.009 (FI to FI Credit Transfer)
+     * Includes debtor/creditor information from the underlying MT103
+     */
+    public PacsDocument convertCov(MT202Cov mt202cov) {
+        if (mt202cov == null) throw new IllegalArgumentException("MT202 COV cannot be null");
+
+        GroupHeader gh = buildGroupHeader(mt202cov);
+
+        CreditTransferTransactionFI tx = buildCovTransaction(mt202cov, gh);
+
+        FICdtTrf body = new FICdtTrf();
+        body.setGrpHdr(gh);
+        body.setCdtTrfTxInf(Collections.singletonList(tx));
+
+        PacsDocument doc = new PacsDocument();
+        doc.setFiCdtTrf(body);
+        return doc;
+    }
+
+    private CreditTransferTransactionFI buildCovTransaction(MT202Cov mt202cov, GroupHeader gh) {
+        BigDecimal amt = SwiftFieldUtils.extractAmount(mt202cov.getField32A());
+        String currency = SwiftFieldUtils.extractCurrency(mt202cov.getField32A(), "XXX");
+
+        CreditTransferTransactionFI tx = new CreditTransferTransactionFI();
+
+        // PmtId
+        PaymentIdentification pmtId = new PaymentIdentification();
+        pmtId.setInstrId(mt202cov.getField20());
+        pmtId.setEndToEndId(mt202cov.getField21Cov() != null ? mt202cov.getField21Cov() : mt202cov.getField21());
+        tx.setPmtId(pmtId);
+
+    // Settlement Amount and Date
+        tx.setIntrBkSttlmAmt(new AmountWithCurrency(amt, currency));
+        tx.setIntrBkSttlmDt(gh.getIntrBkSttlmDt());
+
+        // Agents
+    BranchAndFinancialInstitutionIdentification instgAgt = SwiftFieldUtils.buildAgent009(
+            mt202cov.getField52AOverride() != null ? mt202cov.getField52AOverride() : mt202cov.getField52A());
+    BranchAndFinancialInstitutionIdentification instdAgt = SwiftFieldUtils.buildAgent009(mt202cov.getField58A());
+
+    tx.setInstgAgt(instgAgt);
+    tx.setInstdAgt(instdAgt);
+
+    if (mt202cov.getField56A() != null) {
+        tx.setIntrmyAgt1(SwiftFieldUtils.buildAgent009(mt202cov.getField56A()));
+    }
+
+        tx.setIntrmyAgt1Acct(null);
+        tx.setIntrmyAgt2(null);
+        tx.setIntrmyAgt2Acct(null);
+        tx.setIntrmyAgt3(null);
+        tx.setIntrmyAgt3Acct(null);
+
+    // Debtor / Creditor
+    BranchAndFinancialInstitutionIdentification ultmtDbtr = instgAgt; // Sending FI as ultimate debtor
+    tx.setUltmtDbtr(ultmtDbtr);
+
+BranchAndFinancialInstitutionIdentification dbtr = buildDbtrFrom50(
+        mt202cov.getField50A(),
+        mt202cov.getField50K()
+);
+if (dbtr == null) {
+    // fallback: use InstgAgt as Dbtr if customer info is missing
+    dbtr = SwiftFieldUtils.buildAgent009(
+        mt202cov.getField52AOverride() != null ? mt202cov.getField52AOverride() : mt202cov.getField52A()
+    );
+}
+    tx.setDbtr(dbtr);
+        tx.setDbtrAcct(buildOtherAccount("UNKNOWN-DBTR-ACCT"));
+
+    tx.setDbtrAgt(instgAgt);
+        tx.setDbtrAgtAcct(null);
+
+    BranchAndFinancialInstitutionIdentification cdtr = buildCdtrFrom59(mt202cov.getField59());
+    tx.setCdtr(cdtr);
+    tx.setCdtrAgt(instdAgt);
+    tx.setCdtrAgtAcct(null);
+
+    // Optional / default fields
+        tx.setPurp(null);
+        tx.setRgltryRptg(null);
+        tx.setSplmtryData(null);
+
+        return tx;
+    }
+
+
 
     private GroupHeader buildGroupHeader(MT202 mt202) {
         BigDecimal amt = SwiftFieldUtils.extractAmount(mt202.getField32A());
