@@ -1,7 +1,6 @@
 ![Java](https://img.shields.io/badge/Java-21-blue)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-green)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow)
-![Stars](https://img.shields.io/github/stars/moksnow/Mixar?style=social)
 
 [//]: # (![Build]&#40;https://github.com/moksnow/Mixar/actions/workflows/maven.yml/badge.svg&#41;)
 
