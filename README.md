@@ -1,6 +1,13 @@
+![Java](https://img.shields.io/badge/Java-21-blue)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-green)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow)
+![Build](https://github.com/moksnow/Mixar/actions/workflows/maven.yml/badge.svg)
+![Stars](https://img.shields.io/github/stars/moksnow/Mixar?style=social)
+
 # Mixar
 
-**Mixar** is a Spring Boot application that converts **SWIFT MT messages (MT103 & MT202)** into **ISO 20022 MX messages (pacs.008 & pacs.009)**. It automatically detects the MT type, maps fields to the corresponding MX structure, serializes to XML, and validates the result against official ISO 20022 XSDs.  
+**Mixar** is a Spring Boot application that converts **SWIFT MT messages (MT103, MT202, MT202COV)** into **ISO 20022 MX messages (pacs.008 & pacs.009)**.  
+It automatically detects the MT type, maps fields to the corresponding MX structure, serializes to XML, and validates the result against official ISO 20022 XSDs.
 
 ---
 
@@ -8,6 +15,7 @@
 
 - Convert **MT103 → pacs.008.001.12**  
 - Convert **MT202 → pacs.009.001.11**  
+- Convert **MT202 COV → pacs.009.001.11 (cover payment)**
 - Automatic detection of MT type  
 - XML serialization using JAXB  
 - Validation against ISO 20022 XSD (Payments Clearing and Settlement V13) 
@@ -16,12 +24,34 @@
 
 ---
 
+## Quick Start
+
+### 1. Clone
+```bash
+git clone https://github.com/moksnow/Mixar.git
+```
+### 2. Run
+```bash
+mvn spring-boot:run
+```
+### 3. Test conversion
+```bash
+curl -X POST http://localhost:8080/api/mt-mx/convert \
+-H "Content-Type: text/plain" \
+-d ":20:TRX98765
+:32A:251025EUR2500,00
+:50:Alice
+:59:Bob"
+```
+---
+
 ## Supported Standards
 
 | SWIFT MT | ISO 20022 MX | Description |
 |----------|---------------|-------------|
-| MT103    | pacs.008.001.12 | Customer Credit Transfer | Payments Clearing and Settlement V13 |
-| MT202    | pacs.009.001.11 | Financial Institution Transfer |  ...  |
+| MT103 | pacs.008.001.12 | Customer Credit Transfer |
+| MT202 | pacs.009.001.11 | Financial Institution Transfer |
+| MT202 COV | pacs.009.001.11 | Cover Payment between FIs |
 
 ---
 
@@ -37,58 +67,54 @@
  [MtMxConversionService.convertAndValidate]
         │
         ├─ Step 1: Parse MT message → MtMessage object
-        │
-        ├─ Step 2: Detect MT type
-        │       ├─ MT103 → pacs.008.001.12
-        │       └─ MT202 → pacs.009.001.11
-        │
+        ├─ Step 2: Detect MT type (103, 202, 202COV)
         ├─ Step 3: Map MT → MX → PacsDocument object
-        │
         ├─ Step 4: Serialize MX → XML
-        │
         ├─ Step 5: Validate XML against ISO 20022 XSD
-        │
-        └─ Step 6: Return validated XML to controller
-        │
-        ▼
-[HTTP Response: 200 OK or 400/500 Error]
+        └─ Step 6: Return validated XML
 ```
 
 ---
 
-### MT → MX Mapping Highlights
+## MT → MX Mapping Highlights
 
-- **MT103 fields** → **pacs.008 elements**:
-  - `Field 20` → `PmtId/InstrId & EndToEndId`
-  - `Field 32A` → `IntrBkSttlmAmt` and `IntrBkSttlmDt`
-  - `Field 50` → `Dbtr & DbtrAcct`
-  - `Field 59` → `Cdtr & CdtrAcct`
-  - `Field 52A` → `InstgAgt`
-  - `Field 57A` → `InstdAgt`
-- Optional elements like `InitgPty`, `UltmtDbtr`, `RmtInf`, `SplmtryData` are handled as nullable
-- Strict **element order** enforced via JAXB `@XmlType(propOrder)` for XSD compliance
+### MT103 → pacs.008
+| MT Field | MX Element |
+|-----------|------------|
+| :20: | PmtId/InstrId & EndToEndId |
+| :32A: | IntrBkSttlmAmt & IntrBkSttlmDt |
+| :50a: | Dbtr & DbtrAcct |
+| :59a: | Cdtr & CdtrAcct |
+| :52A: | InstgAgt |
+| :57A: | InstdAgt |
 
-- **MT202 fields** → **pacs.009 elements** mapped similarly for interbank transfers
+### MT202 → pacs.009
+| MT Field | MX Element |
+|-----------|------------|
+| :20: | PmtId/InstrId |
+| :21: | PmtId/UETR or TxRef |
+| :32A: | IntrBkSttlmAmt & IntrBkSttlmDt |
+| :52A: | InstgAgt |
+| :58A: | InstdAgt |
+
+### MT202 COV → pacs.009 (Cover Payment)
+Includes MT202 fields + additional customer info:
+
+| MT202 COV Field | MX Element |
+|------------------|------------|
+| :50a: Ordering Customer | UltmtDbtr / Dbtr |
+| :59: Beneficiary Customer | Cdtr |
+| :70: Payment Details | RmtInf/Ustrd |
+| :72: Sender to Receiver | SplmtryData or InstrForNxtAgt |
 
 ---
 
-## REST API
+## REST API Usage
 
 **POST** `/convert`  
-**Content-Type:** `application/json`  
+**Content‑Type:** `text/plain`
 
-**Request Body Example:**
-
-**Response:**
-
-- **200 OK** → Returns validated MX XML  
-- **400 Bad Request** → Parsing or validation error  
-- **500 Internal Server Error** → Unexpected errors  
-
-
-**Example Request XML:**
-You can use this **minimal MT103 message** to test your Mixar API quickly:
-
+### Example MT103
 ```
 :20:TRX98765
 :32A:251025EUR2500,00
@@ -206,26 +232,14 @@ Bob Beneficiary
 
 ## Installation
 
-1. Clone the repository:
-
 ```bash
 git clone https://github.com/moksnow/Mixar.git
 cd Mixar
-```
-
-2. Build with Maven:
-
-```bash
 mvn clean install
-```
-
-3. Run the application:
-
-```bash
 mvn spring-boot:run
 ```
 
-The REST API will be available at `http://localhost:8080/convert`.
+Then open → `http://localhost:8080/convert`
 
 ---
 
@@ -233,9 +247,9 @@ The REST API will be available at `http://localhost:8080/convert`.
 
 - Java 21  
 - Spring Boot 3.x  
-- JAXB for XML binding  
+- JAXB (XML binding)
 - ISO 20022 XSD validation  
-- Lombok for model classes  
+- Lombok
 - Maven build system  
 
 ---
