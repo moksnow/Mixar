@@ -72,6 +72,8 @@ curl -X POST http://localhost:8080/api/mt-mx/convert \
         ├─ Step 4: Serialize MX → XML
         ├─ Step 5: Validate XML against ISO 20022 XSD
         └─ Step 6: Return validated XML
+        ▼
+     XML Output
 ```
 
 ---
@@ -111,7 +113,7 @@ Includes MT202 fields + additional customer info:
 
 ## REST API Usage
 
-**POST** `/convert`  
+**POST** `/api/mt-mx/convert`  
 **Content‑Type:** `text/plain`
 
 ### Example MT103
@@ -134,7 +136,7 @@ curl -X POST http://localhost:8080/api/mt-mx/convert \
 ```
 
 
-You can use this **minimal MT202 message** to test your Mixar API quickly:
+### Example MT202
 ```
 {1:F01BANKBEBBAXXX0000000000}{2:I202BANKDEFFXXXXN}{4:
 :20:TRX202002
@@ -166,7 +168,7 @@ curl -X POST http://localhost:8080/api/mt-mx/convert \
 
 ```
 
-You can use this **minimal MT202COV message** to test your Mixar API quickly:
+### Example MT202COV
 ```
 {1:F01BANKBEBBAXXX0000000000}{2:I202BANKDEFFXXXXN}{4:
 :20:TRX202COV001
@@ -226,8 +228,6 @@ Bob Beneficiary
 </PacsDocument>
 ```
 
-✅ The app will automatically detect it as **MT103**, map it to **pacs.008.001.12**, serialize the XML, and validate it against the ISO 20022 schema.
-
 ---
 
 ## Installation
@@ -239,7 +239,7 @@ mvn clean install
 mvn spring-boot:run
 ```
 
-Then open → `http://localhost:8080/convert`
+Then open → `http://localhost:8080/api/mt-mx/convert`
 
 ---
 
